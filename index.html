@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FSA Atom Notation Simulator — Lab Edition</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="hd-eyebrow">Finite State Automaton</div>
+      <div class="hd-main">
+        <h1>
+          FSA <em>Atom</em> Notation Simulator<span class="hd-badge">v2.2</span>
+        </h1>
+        <div class="hd-sub">
+          STATE MACHINE · SCIENTIFIC NOTATION · PERIODIC TABLE VALIDATION
+        </div>
+      </div>
+      <button
+        class="dm-toggle"
+        id="dmToggle"
+        onclick="toggleDark()"
+        title="Toggle dark mode"
+      >
+        <span id="dmIcon">◐</span>
+      </button>
+    </header>
+
+    <div class="status-bar">
+      <div class="sb-indicator" id="sbIndicator"></div>
+      <div class="sb-status" id="sbStatus">AWAITING INPUT</div>
+      <div class="sb-char" id="sbChar"></div>
+    </div>
+
+    <div class="workspace">
+      <!-- LEFT COLUMN -->
+      <div class="col-left">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Input & Controls</span>
+          </div>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <input
+                class="input-field"
+                id="inputStr"
+                type="text"
+                value="23_11Na"
+                placeholder="e.g. 235_92U3+"
+                spellcheck="false"
+                autocomplete="off"
+              />
+              <button
+                class="input-clear"
+                id="inputClear"
+                onclick="clearInput()"
+              >
+                ×
+              </button>
+            </div>
+            <div class="input-hint">
+              FORMAT: [mass]_[Z][Symbol][charge?] · Enter to run
+            </div>
+            <div class="speed-row">
+              <span class="speed-label">SPEED</span>
+              <input
+                type="range"
+                class="speed-slider"
+                id="speedSlider"
+                min="1"
+                max="5"
+                value="3"
+              />
+              <span class="speed-val" id="speedVal">3×</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-run" id="btnRun" onclick="runSimulation()">
+                <span class="btn-icon">▶</span> RUN
+              </button>
+              <button class="btn btn-step" id="btnStep" onclick="stepNext()">
+                <span class="btn-icon">⏭</span> STEP
+              </button>
+              <button class="btn btn-reset" id="btnReset" onclick="resetAll()">
+                <span class="btn-icon">↺</span> RESET
+              </button>
+            </div>
+            <div class="qt-section">
+              <span class="qt-label">QUICK TESTS</span>
+              <div class="qt-grid">
+                <button class="qt-btn" onclick="setInput('23_11Na')">
+                  ²³Na
+                </button>
+                <button class="qt-btn" onclick="setInput('235_92U3+')">
+                  ²³⁵U³⁺
+                </button>
+                <button class="qt-btn" onclick="setInput('14_7N-')">
+                  ¹⁴N⁻
+                </button>
+                <button class="qt-btn" onclick="setInput('56_26Fe2+')">
+                  ⁵⁶Fe²⁺
+                </button>
+                <button class="qt-btn" onclick="setInput('40_20Ca2+')">
+                  ⁴⁰Ca²⁺
+                </button>
+                <button class="qt-btn" onclick="setInput('4_2He')">⁴He</button>
+                <button class="qt-btn" onclick="setInput('197_79Au')">
+                  ¹⁹⁷Au
+                </button>
+                <button class="qt-btn" onclick="setInput('238_92U')">
+                  ²³⁸U
+                </button>
+                <button class="qt-btn warn" onclick="setInput('23_92Na')">
+                  ⚠ Z mismatch
+                </button>
+                <button class="qt-btn err" onclick="setInput('abc')">
+                  ✗ invalid
+                </button>
+                <button class="qt-btn err" onclick="setInput('23_Na')">
+                  ✗ no Z
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Element Info Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Element Info</span>
+          </div>
+          <div class="panel-body" id="elemInfo" style="padding: 12px 14px">
+            <div
+              style="
+                font-family: &quot;IBM Plex Mono&quot;, monospace;
+                font-size: 9px;
+                color: var(--ink-5);
+                text-align: center;
+                padding: 14px 0;
+                line-height: 1.8;
+              "
+            >
+              Run a valid simulation<br />to see element data
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER COLUMN -->
+      <div class="col-center">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Result — Scientific Notation</span>
+            <button
+              id="copyBtn"
+              onclick="copyResult()"
+              style="
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                font-family: &quot;IBM Plex Mono&quot;, monospace;
+                font-size: 8px;
+                letter-spacing: 1px;
+                color: var(--ink-3);
+                padding: 3px 9px;
+                cursor: pointer;
+                transition: all 0.12s;
+                text-transform: uppercase;
+              "
+              title="Copy notation"
+            >
+              COPY
+            </button>
+          </div>
+          <div class="result-section">
+            <div class="atom-render" id="atomRender">—</div>
+          </div>
+        </div>
+
+        <!-- FSA Diagram Panel -->
+        <div class="panel" style="flex: 1">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">FSA Diagram — State Transition Graph</span>
+          </div>
+          <div class="fsa-wrap">
+            <svg
+              id="fsa-svg"
+              viewBox="0 0 760 270"
+              style="width: 100%; height: 270px; display: block"
+            >
+              <defs>
+                <marker
+                  id="arr"
+                  markerWidth="7"
+                  markerHeight="5"
+                  refX="6"
+                  refY="2.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0,7 2.5,0 5" fill="#9a968a" />
+                </marker>
+                <marker
+                  id="arr-active"
+                  markerWidth="7"
+                  markerHeight="5"
+                  refX="6"
+                  refY="2.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0,7 2.5,0 5" fill="#18170f" />
+                </marker>
+                <marker
+                  id="arr-error"
+                  markerWidth="7"
+                  markerHeight="5"
+                  refX="6"
+                  refY="2.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0,7 2.5,0 5" fill="#8c2018" />
+                </marker>
+                <marker
+                  id="arr-traced"
+                  markerWidth="7"
+                  markerHeight="5"
+                  refX="6"
+                  refY="2.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0,7 2.5,0 5" fill="#6b4e08" />
+                </marker>
+              </defs>
+              <pattern
+                id="gdots"
+                x="0"
+                y="0"
+                width="20"
+                height="20"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="1" cy="1" r=".6" fill="#cac6ba" opacity=".5" />
+              </pattern>
+              <rect width="760" height="270" fill="url(#gdots)" />
+              <path
+                id="t-q0-q1"
+                class="transition-line"
+                d="M 95,135 L 175,135"
+              />
+              <text class="transition-label" id="tl-q0-q1" x="135" y="125">
+                0-9
+              </text>
+              <path
+                id="t-q1-q1"
+                class="transition-line"
+                d="M 215,110 C 215,70 252,55 252,78 C 252,101 232,111 216,115"
+              />
+              <text class="transition-label" id="tl-q1-q1" x="268" y="54">
+                0-9
+              </text>
+              <path
+                id="t-q1-q2"
+                class="transition-line"
+                d="M 270,135 L 350,135"
+              />
+              <text class="transition-label" id="tl-q1-q2" x="310" y="125">
+                _
+              </text>
+              <path
+                id="t-q2-q3"
+                class="transition-line"
+                d="M 425,135 L 505,135"
+              />
+              <text class="transition-label" id="tl-q2-q3" x="465" y="125">
+                0-9
+              </text>
+              <path
+                id="t-q3-q3"
+                class="transition-line"
+                d="M 545,110 C 545,70 582,55 582,78 C 582,101 562,111 546,115"
+              />
+              <text class="transition-label" id="tl-q3-q3" x="598" y="54">
+                0-9
+              </text>
+              <path
+                id="t-q3-q4"
+                class="transition-line"
+                d="M 600,135 L 680,135"
+              />
+              <text class="transition-label" id="tl-q3-q4" x="640" y="125">
+                A-Z
+              </text>
+              <path
+                id="t-q4-q4"
+                class="transition-line"
+                d="M 720,110 C 720,70 757,55 757,78 C 757,101 737,111 721,115"
+              />
+              <text class="transition-label" id="tl-q4-q4" x="773" y="54">
+                a-z
+              </text>
+              <path
+                id="t-q4-q5"
+                class="transition-line"
+                d="M 718,160 C 718,215 580,250 500,233 C 430,218 390,216 352,220"
+              />
+              <text class="transition-label" id="tl-q4-q5" x="560" y="256">
+                0-9
+              </text>
+              <path
+                id="t-q4-q6"
+                class="transition-line"
+                d="M 695,160 C 678,214 500,233 390,228 C 340,225 278,222 237,222"
+              />
+              <text class="transition-label" id="tl-q4-q6" x="490" y="240">
+                +/-
+              </text>
+              <path
+                id="t-q5-q6"
+                class="transition-line"
+                d="M 300,220 L 245,220"
+              />
+              <text class="transition-label" id="tl-q5-q6" x="272" y="210">
+                +/-
+              </text>
+              <path
+                id="t-q4-qf"
+                class="transition-line"
+                d="M 715,120 C 700,30 100,20 65,120"
+              />
+              <text class="transition-label" id="tl-q4-qf" x="390" y="13">
+                ε (accept)
+              </text>
+              <path
+                id="t-q6-qf"
+                class="transition-line"
+                d="M 200,220 C 158,220 100,195 70,162"
+              />
+              <text class="transition-label" id="tl-q6-qf" x="118" y="213">
+                ε (accept)
+              </text>
+              <line
+                x1="26"
+                y1="135"
+                x2="52"
+                y2="135"
+                stroke="#9a968a"
+                stroke-width="1.5"
+                marker-end="url(#arr)"
+              />
+              <text
+                fill="#7a776f"
+                font-family="'IBM Plex Mono',monospace"
+                font-size="7"
+                x="6"
+                y="128"
+              >
+                START
+              </text>
+              <circle
+                id="node-q0"
+                class="state-circle"
+                cx="73"
+                cy="135"
+                r="20"
+              />
+              <text id="label-q0" class="state-label" x="73" y="135">q0</text>
+              <circle
+                id="node-q1"
+                class="state-circle"
+                cx="245"
+                cy="135"
+                r="20"
+              />
+              <text id="label-q1" class="state-label" x="245" y="135">q1</text>
+              <circle
+                id="node-q2"
+                class="state-circle"
+                cx="388"
+                cy="135"
+                r="20"
+              />
+              <text id="label-q2" class="state-label" x="388" y="135">q2</text>
+              <circle
+                id="node-q3"
+                class="state-circle"
+                cx="545"
+                cy="135"
+                r="20"
+              />
+              <text id="label-q3" class="state-label" x="545" y="135">q3</text>
+              <circle
+                id="node-q4"
+                class="state-circle"
+                cx="718"
+                cy="135"
+                r="20"
+              />
+              <text id="label-q4" class="state-label" x="718" y="135">q4</text>
+              <circle
+                id="node-q5"
+                class="state-circle"
+                cx="330"
+                cy="220"
+                r="20"
+              />
+              <text id="label-q5" class="state-label" x="330" y="220">q5</text>
+              <circle
+                id="node-q6"
+                class="state-circle"
+                cx="215"
+                cy="220"
+                r="20"
+              />
+              <text id="label-q6" class="state-label" x="215" y="220">q6</text>
+              <circle
+                id="node-qf-outer"
+                class="final-ring"
+                cx="73"
+                cy="135"
+                r="27"
+              />
+              <circle
+                id="node-qf"
+                class="state-circle"
+                cx="73"
+                cy="135"
+                r="20"
+              />
+              <text id="label-qf" class="state-label" x="73" y="135">
+                q0/qf
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-right">
+        <!-- History Panel -->
+        <div class="panel" style="flex: 1">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">History</span>
+            <span class="trace-counter" id="histCount">0</span>
+          </div>
+          <div class="panel-body">
+            <div class="history-list" id="histList">
+              <div class="hist-empty">No simulations yet</div>
+            </div>
+            <div class="hist-actions">
+              <button class="hist-action-btn" onclick="exportHistory()">
+                ↓ Export
+              </button>
+              <button class="hist-action-btn" onclick="clearHistory()">
+                ✕ Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="row-bottom">
+        <!-- Tape Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Character Tape</span>
+            <span class="tape-head-indicator" id="tapeHeadLabel"
+              >▼ HEAD @ 0</span
+            >
+          </div>
+          <div class="panel-body">
+            <div class="tape-wrapper" id="tapeWrapper">
+              <div class="tape-track" id="tapeCells"></div>
+            </div>
+            <div class="tape-prog-bar">
+              <div class="tape-prog-fill" id="tapeProgFill"></div>
+            </div>
+            <div class="tape-progress" id="tapeProgress">— no input —</div>
+          </div>
+        </div>
+
+        <!-- Transition Table Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Transition Table</span>
+          </div>
+          <div class="panel-body" style="padding: 0">
+            <div class="trans-table-wrap" id="transTableWrap"></div>
+          </div>
+        </div>
+
+        <!-- Log Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Transition Log</span>
+          </div>
+          <div class="panel-body" style="padding: 0 14px 12px">
+            <div class="log-container" id="logContainer">
+              <div class="log-info">
+                // READY — Enter a string and press RUN or STEP
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW ROW: Bohr Atom Visualizer + Mini Periodic Table -->
+      <div class="row-bottom" style="margin-top: 0">
+        <!-- Bohr Atom Visualizer -->
+        <div class="panel" style="grid-column: span 1">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Atom Visualizer — Bohr Model</span>
+            <span class="ph-badge" id="bohrAnimBadge">STATIC</span>
+          </div>
+          <div class="panel-body" style="padding: 0 14px 14px">
+            <div class="bohr-container">
+              <div class="bohr-svg-wrap">
+                <svg id="bohrSVG" viewBox="-110 -110 220 220"></svg>
+              </div>
+              <div class="bohr-info" id="bohrInfo">
+                <div class="bohr-empty">
+                  Run a valid simulation<br />to visualize atom
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Periodic Table -->
+        <div class="panel" style="grid-column: span 2">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Mini Periodic Table</span>
+            <span class="ph-badge" id="ptHighlightBadge">NO ELEMENT</span>
+          </div>
+          <div class="pt-container">
+            <div class="pt-grid" id="ptGrid"></div>
+            <div class="pt-legend" id="ptLegend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BATCH INPUT ROW -->
+      <div
+        class="row-bottom"
+        style="margin-top: 0; grid-template-columns: 1fr 1fr"
+      >
+        <!-- Batch Input Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Batch Input</span>
+            <span class="ph-badge" id="batchStatBadge">0 ENTRIES</span>
+          </div>
+          <div class="panel-body">
+            <div
+              style="
+                font-family: &quot;IBM Plex Mono&quot;, monospace;
+                font-size: 8px;
+                color: var(--ink-4);
+                letter-spacing: 0.8px;
+                margin-bottom: 6px;
+              "
+            >
+              Satu notasi per baris · max 100 entri
+            </div>
+            <textarea
+              id="batchInput"
+              spellcheck="false"
+              placeholder="23_11Na&#10;235_92U3+&#10;14_7N-&#10;56_26Fe2+&#10;abc&#10;23_Na"
+            ></textarea>
+            <div
+              style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap"
+            >
+              <button class="btn" style="flex: 2" onclick="runBatch()">
+                <span class="btn-icon">▶▶</span> VALIDATE ALL
+              </button>
+              <button
+                class="btn"
+                style="flex: 1; border-color: var(--amber); color: var(--amber)"
+                onclick="loadBatchSamples()"
+              >
+                SAMPLES
+              </button>
+              <button
+                class="btn btn-reset"
+                style="flex: 1"
+                onclick="clearBatch()"
+              >
+                CLEAR
+              </button>
+            </div>
+            <div
+              class="batch-progress-bar"
+              id="batchProgressBar"
+              style="display: none"
+            >
+              <div class="batch-progress-fill" id="batchProgressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Results Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="ph-dot"></div>
+            <span class="ph-title">Batch Results</span>
+            <div style="display: flex; gap: 5px; align-items: center">
+              <span class="batch-summary-pill valid" id="batchValidCount"
+                >0 ✓</span
+              >
+              <span class="batch-summary-pill invalid" id="batchInvalidCount"
+                >0 ✗</span
+              >
+              <button
+                onclick="exportBatchCSV()"
+                style="
+                  background: var(--bg-card);
+                  border: 1px solid var(--border);
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  font-size: 7px;
+                  letter-spacing: 1px;
+                  color: var(--ink-3);
+                  padding: 2px 7px;
+                  cursor: pointer;
+                  transition: all 0.12s;
+                  text-transform: uppercase;
+                  margin-left: 4px;
+                "
+              >
+                ↓ CSV
+              </button>
+            </div>
+          </div>
+          <div class="panel-body" style="padding: 0">
+            <div id="batchResults" class="batch-results-wrap">
+              <div class="batch-empty">
+                Masukkan notasi di kiri lalu klik VALIDATE ALL
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      FSA ATOM NOTATION SIMULATOR · LAB EDITION v2.3 · BOHR · PERIODIC TABLE ·
+      BATCH INPUT
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script src="js/utils.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/fsa-core.js"></script>
+    <script src="js/periodic-table.js"></script>
+    <script src="js/bohr-atom.js"></script>
+    <script src="js/fsa-visuals.js"></script>
+    <script src="js/atom-ui.js"></script>
+    <script src="js/ui-helpers.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/simulation.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/batch.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
