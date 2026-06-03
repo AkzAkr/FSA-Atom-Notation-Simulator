@@ -17,6 +17,10 @@
         --amber: #6b4e08;
         --amber-light: #f5efdc;
         --blue: #0f2848;
+        --active-bg: #18170f;
+        --active-bg-soft: #e4e0d4;
+        --active-fg: #faf9f6;
+        --active-stroke: #18170f;
         --grid: rgba(24, 23, 15, 0.05);
         --shadow:
           0 1px 3px rgba(24, 23, 15, 0.08), 0 1px 2px rgba(24, 23, 15, 0.06);
@@ -40,6 +44,10 @@
         --amber: #c8922a;
         --amber-light: #221808;
         --blue: #7aabde;
+        --active-bg: #2b3a4a;
+        --active-bg-soft: #262b26;
+        --active-fg: #f0ede6;
+        --active-stroke: #d3a54c;
         --grid: rgba(240, 237, 230, 0.04);
         --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
       }
@@ -198,8 +206,8 @@
       }
       .sb-char .char-highlight {
         display: inline-block;
-        background: var(--ink);
-        color: #faf9f6;
+        background: var(--active-bg);
+        color: var(--active-fg);
         padding: 1px 7px;
         font-size: 13px;
         margin: 0 3px;
@@ -376,7 +384,7 @@
         -webkit-appearance: none;
         width: 12px;
         height: 12px;
-        background: var(--ink);
+        background: var(--active-stroke);
         cursor: pointer;
         border-radius: 50%;
       }
@@ -411,9 +419,9 @@
         gap: 5px;
       }
       .btn:hover {
-        background: var(--ink);
-        color: #faf9f6;
-        border-color: var(--ink);
+        background: var(--active-bg);
+        color: var(--active-fg);
+        border-color: var(--active-stroke);
       }
       .btn-step {
         border-color: var(--amber);
@@ -478,9 +486,9 @@
         letter-spacing: 0.3px;
       }
       .qt-btn:hover {
-        background: var(--ink);
-        color: #faf9f6;
-        border-color: var(--ink);
+        background: var(--active-bg);
+        color: var(--active-fg);
+        border-color: var(--active-stroke);
       }
       .qt-btn.warn {
         color: var(--amber);
@@ -627,8 +635,8 @@
           stroke 0.2s;
       }
       .state-circle.active {
-        fill: #e4e0d4;
-        stroke: var(--ink);
+        fill: var(--active-bg-soft);
+        stroke: var(--active-stroke);
         stroke-width: 2.5;
       }
       .state-circle.error {
@@ -651,7 +659,7 @@
         transition: fill 0.2s;
       }
       .state-label.active {
-        fill: var(--ink);
+        fill: var(--active-stroke);
         font-weight: 500;
       }
       .state-label.error {
@@ -666,8 +674,20 @@
         stroke-width: 1.5;
         marker-end: url(#arr);
       }
+      .arr-default {
+        fill: var(--border-strong);
+      }
+      .arr-active {
+        fill: var(--active-stroke);
+      }
+      .arr-error {
+        fill: var(--red);
+      }
+      .arr-traced {
+        fill: var(--amber);
+      }
       .transition-line.active {
-        stroke: var(--ink);
+        stroke: var(--active-stroke);
         stroke-width: 2.5;
         marker-end: url(#arr-active);
       }
@@ -710,7 +730,7 @@
       .pulse {
         animation: pulse-ring 0.7s ease-out forwards;
         fill: none;
-        stroke: var(--ink);
+        stroke: var(--active-stroke);
         stroke-width: 1.5;
       }
       .tape-head {
@@ -763,14 +783,14 @@
         color: var(--ink-5);
       }
       .tape-cell.tc-active {
-        background: var(--ink);
-        border-color: var(--ink);
+        background: var(--active-bg);
+        border-color: var(--active-stroke);
       }
       .tape-cell.tc-active .tc-char {
-        color: #faf9f6;
+        color: var(--active-fg);
       }
       .tape-cell.tc-active .tc-idx {
-        color: rgba(250, 249, 246, 0.4);
+        color: color-mix(in srgb, var(--active-fg) 45%, transparent);
       }
       .tape-cell.tc-error {
         background: var(--red-light);
@@ -795,7 +815,7 @@
       }
       .tape-prog-fill {
         height: 100%;
-        background: var(--ink);
+        background: var(--active-stroke);
         transition: width 0.3s;
         width: 0%;
       }
@@ -836,8 +856,9 @@
         color: var(--ink-2);
       }
       .trans-table td.tc-highlight {
-        background: var(--ink);
-        color: #faf9f6;
+        background: var(--active-bg);
+        border-color: var(--active-stroke);
+        color: var(--active-fg);
       }
       .trans-table td.tc-accept {
         color: var(--green);
@@ -904,11 +925,11 @@
         gap: 8px;
       }
       .hist-item:hover {
-        background: var(--ink);
+        background: var(--active-bg);
       }
       .hist-item:hover .hist-str,
       .hist-item:hover .hist-render {
-        color: rgba(250, 249, 246, 0.7);
+        color: color-mix(in srgb, var(--active-fg) 72%, transparent);
       }
       .hist-dot {
         width: 6px;
@@ -958,16 +979,16 @@
         text-transform: uppercase;
       }
       .hist-action-btn:hover {
-        background: var(--ink);
-        color: #faf9f6;
-        border-color: var(--ink);
+        background: var(--active-bg);
+        color: var(--active-fg);
+        border-color: var(--active-stroke);
       }
       .toast {
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: var(--ink);
-        color: #faf9f6;
+        background: var(--active-bg);
+        color: var(--active-fg);
         font-family: "IBM Plex Mono", monospace;
         font-size: 10px;
         letter-spacing: 1px;
@@ -1072,30 +1093,43 @@
 
       /* ─── MINI PERIODIC TABLE ─── */
       .pt-container {
-        padding: 10px 12px 12px;
+        padding: 14px 16px 16px;
         overflow-x: auto;
       }
       .pt-grid {
         display: inline-grid;
-        grid-template-columns: repeat(18, 22px);
-        grid-template-rows: repeat(7, 22px);
-        gap: 2px;
-        min-width: 430px;
+        grid-template-columns: repeat(18, 36px);
+        grid-template-rows: repeat(9, 36px);
+        gap: 3px;
+        min-width: 699px;
       }
       .pt-cell {
-        width: 22px;
-        height: 22px;
+        width: 36px;
+        height: 36px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         font-family: "IBM Plex Mono", monospace;
-        font-size: 6.5px;
         font-weight: 500;
         border: 1px solid transparent;
         cursor: default;
         transition: all 0.15s;
         position: relative;
         letter-spacing: 0;
+        line-height: 1;
+        padding: 3px 2px 2px;
+        overflow: visible;
+      }
+      .pt-z {
+        align-self: flex-start;
+        font-size: 7px;
+        line-height: 1;
+        opacity: 0.8;
+      }
+      .pt-symbol {
+        font-size: 12px;
+        line-height: 1.1;
       }
       .pt-cell:hover .pt-tooltip {
         display: block;
@@ -1105,59 +1139,59 @@
         border-color: transparent;
       }
       .pt-cell.pt-alkali {
-        background: rgba(122, 58, 16, 0.15);
-        border-color: rgba(122, 58, 16, 0.3);
-        color: #7a3a10;
+        background: rgba(208, 78, 42, 0.16);
+        border-color: rgba(208, 78, 42, 0.38);
+        color: #a33b1f;
       }
       .pt-cell.pt-alkaline {
-        background: rgba(122, 80, 16, 0.15);
-        border-color: rgba(122, 80, 16, 0.3);
-        color: #6a4008;
+        background: rgba(210, 148, 28, 0.18);
+        border-color: rgba(210, 148, 28, 0.42);
+        color: #92600a;
       }
       .pt-cell.pt-transition {
-        background: rgba(20, 46, 88, 0.1);
-        border-color: rgba(20, 46, 88, 0.25);
-        color: #1a3060;
+        background: rgba(105, 76, 210, 0.13);
+        border-color: rgba(105, 76, 210, 0.35);
+        color: #4f3bb0;
       }
       .pt-cell.pt-post {
-        background: rgba(80, 80, 80, 0.12);
-        border-color: rgba(80, 80, 80, 0.25);
-        color: #404040;
+        background: rgba(40, 144, 106, 0.14);
+        border-color: rgba(40, 144, 106, 0.35);
+        color: #1f6d50;
       }
       .pt-cell.pt-metalloid {
-        background: rgba(42, 90, 42, 0.12);
-        border-color: rgba(42, 90, 42, 0.25);
-        color: #2a5a2a;
+        background: rgba(117, 154, 36, 0.16);
+        border-color: rgba(117, 154, 36, 0.38);
+        color: #556f1b;
       }
       .pt-cell.pt-nonmetal {
-        background: rgba(42, 90, 120, 0.12);
-        border-color: rgba(42, 90, 120, 0.25);
-        color: #2a5a78;
+        background: rgba(28, 132, 210, 0.14);
+        border-color: rgba(28, 132, 210, 0.36);
+        color: #17679e;
       }
       .pt-cell.pt-halogen {
-        background: rgba(106, 32, 80, 0.12);
-        border-color: rgba(106, 32, 80, 0.25);
-        color: #6a2050;
+        background: rgba(203, 48, 132, 0.14);
+        border-color: rgba(203, 48, 132, 0.36);
+        color: #9a2263;
       }
       .pt-cell.pt-noble {
-        background: rgba(58, 90, 128, 0.12);
-        border-color: rgba(58, 90, 128, 0.25);
-        color: #3a5a80;
+        background: rgba(20, 158, 188, 0.14);
+        border-color: rgba(20, 158, 188, 0.36);
+        color: #0d748d;
       }
       .pt-cell.pt-lanthanide {
-        background: rgba(80, 42, 100, 0.1);
-        border-color: rgba(80, 42, 100, 0.2);
-        color: #503070;
+        background: rgba(65, 142, 226, 0.14);
+        border-color: rgba(65, 142, 226, 0.36);
+        color: #2d6faf;
       }
       .pt-cell.pt-actinide {
-        background: rgba(58, 32, 96, 0.1);
-        border-color: rgba(58, 32, 96, 0.2);
-        color: #3a2060;
+        background: rgba(221, 100, 64, 0.15);
+        border-color: rgba(221, 100, 64, 0.38);
+        color: #9b472d;
       }
       .pt-cell.pt-highlight {
-        background: var(--ink) !important;
-        border-color: var(--ink) !important;
-        color: #faf9f6 !important;
+        background: var(--active-bg) !important;
+        border-color: var(--active-stroke) !important;
+        color: var(--active-fg) !important;
         box-shadow: 0 0 0 2px var(--amber);
         transform: scale(1.15);
         z-index: 10;
@@ -1168,8 +1202,8 @@
         bottom: calc(100% + 4px);
         left: 50%;
         transform: translateX(-50%);
-        background: var(--ink);
-        color: #faf9f6;
+        background: var(--active-bg);
+        color: var(--active-fg);
         font-family: "IBM Plex Mono", monospace;
         font-size: 8px;
         padding: 4px 8px;
@@ -1181,71 +1215,156 @@
       .pt-legend {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
-        margin-top: 8px;
+        gap: 6px;
+        margin-top: 12px;
+        align-items: center;
       }
       .pt-leg-item {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         font-family: "IBM Plex Mono", monospace;
-        font-size: 7px;
-        color: var(--ink-4);
+        font-size: 8px;
+        color: var(--ink-3);
+        padding: 3px 6px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
       }
       .pt-leg-dot {
-        width: 10px;
-        height: 10px;
+        width: 13px;
+        height: 13px;
         border: 1px solid transparent;
+        flex-shrink: 0;
+      }
+      .pt-leg-dot.pt-alkali {
+        background: rgba(208, 78, 42, 0.24);
+        border-color: rgba(208, 78, 42, 0.52);
+      }
+      .pt-leg-dot.pt-alkaline {
+        background: rgba(210, 148, 28, 0.26);
+        border-color: rgba(210, 148, 28, 0.55);
+      }
+      .pt-leg-dot.pt-transition {
+        background: rgba(105, 76, 210, 0.22);
+        border-color: rgba(105, 76, 210, 0.5);
+      }
+      .pt-leg-dot.pt-post {
+        background: rgba(40, 144, 106, 0.22);
+        border-color: rgba(40, 144, 106, 0.5);
+      }
+      .pt-leg-dot.pt-metalloid {
+        background: rgba(117, 154, 36, 0.24);
+        border-color: rgba(117, 154, 36, 0.52);
+      }
+      .pt-leg-dot.pt-nonmetal {
+        background: rgba(28, 132, 210, 0.22);
+        border-color: rgba(28, 132, 210, 0.5);
+      }
+      .pt-leg-dot.pt-halogen {
+        background: rgba(203, 48, 132, 0.22);
+        border-color: rgba(203, 48, 132, 0.5);
+      }
+      .pt-leg-dot.pt-noble {
+        background: rgba(20, 158, 188, 0.22);
+        border-color: rgba(20, 158, 188, 0.5);
+      }
+      .pt-leg-dot.pt-lanthanide {
+        background: rgba(65, 142, 226, 0.22);
+        border-color: rgba(65, 142, 226, 0.5);
+      }
+      .pt-leg-dot.pt-actinide {
+        background: rgba(221, 100, 64, 0.24);
+        border-color: rgba(221, 100, 64, 0.52);
       }
       [data-theme="dark"] .pt-cell.pt-alkali {
-        background: rgba(200, 120, 60, 0.15);
-        border-color: rgba(200, 120, 60, 0.3);
-        color: #c87840;
+        background: rgba(255, 112, 74, 0.16);
+        border-color: rgba(255, 112, 74, 0.42);
+        color: #ff8a63;
       }
       [data-theme="dark"] .pt-cell.pt-alkaline {
-        background: rgba(180, 140, 60, 0.12);
-        border-color: rgba(180, 140, 60, 0.25);
-        color: #b8a040;
+        background: rgba(245, 180, 56, 0.17);
+        border-color: rgba(245, 180, 56, 0.42);
+        color: #f0bf55;
       }
       [data-theme="dark"] .pt-cell.pt-transition {
-        background: rgba(100, 150, 220, 0.1);
-        border-color: rgba(100, 150, 220, 0.2);
-        color: #6496dc;
+        background: rgba(158, 126, 255, 0.15);
+        border-color: rgba(158, 126, 255, 0.38);
+        color: #b19cff;
       }
       [data-theme="dark"] .pt-cell.pt-post {
-        background: rgba(160, 160, 160, 0.1);
-        border-color: rgba(160, 160, 160, 0.2);
-        color: #a0a0a0;
+        background: rgba(82, 204, 151, 0.14);
+        border-color: rgba(82, 204, 151, 0.36);
+        color: #65d8a5;
       }
       [data-theme="dark"] .pt-cell.pt-metalloid {
-        background: rgba(80, 180, 80, 0.1);
-        border-color: rgba(80, 180, 80, 0.2);
-        color: #50b450;
+        background: rgba(166, 205, 68, 0.15);
+        border-color: rgba(166, 205, 68, 0.38);
+        color: #b6d965;
       }
       [data-theme="dark"] .pt-cell.pt-nonmetal {
-        background: rgba(80, 160, 220, 0.1);
-        border-color: rgba(80, 160, 220, 0.2);
-        color: #50a0dc;
+        background: rgba(69, 171, 245, 0.14);
+        border-color: rgba(69, 171, 245, 0.36);
+        color: #6ec2ff;
       }
       [data-theme="dark"] .pt-cell.pt-halogen {
-        background: rgba(200, 80, 160, 0.1);
-        border-color: rgba(200, 80, 160, 0.2);
-        color: #c850a0;
+        background: rgba(243, 84, 171, 0.14);
+        border-color: rgba(243, 84, 171, 0.36);
+        color: #ff79c8;
       }
       [data-theme="dark"] .pt-cell.pt-noble {
-        background: rgba(120, 180, 240, 0.1);
-        border-color: rgba(120, 180, 240, 0.2);
-        color: #78b4f0;
+        background: rgba(47, 210, 224, 0.14);
+        border-color: rgba(47, 210, 224, 0.36);
+        color: #72e2ef;
       }
       [data-theme="dark"] .pt-cell.pt-lanthanide {
-        background: rgba(160, 120, 200, 0.1);
-        border-color: rgba(160, 120, 200, 0.2);
-        color: #a078c8;
+        background: rgba(91, 168, 255, 0.14);
+        border-color: rgba(91, 168, 255, 0.36);
+        color: #8ec6ff;
       }
       [data-theme="dark"] .pt-cell.pt-actinide {
-        background: rgba(120, 80, 180, 0.1);
-        border-color: rgba(120, 80, 180, 0.2);
-        color: #7850b4;
+        background: rgba(255, 133, 98, 0.15);
+        border-color: rgba(255, 133, 98, 0.38);
+        color: #ff9d7b;
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-alkali {
+        background: rgba(255, 112, 74, 0.24);
+        border-color: rgba(255, 112, 74, 0.55);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-alkaline {
+        background: rgba(245, 180, 56, 0.24);
+        border-color: rgba(245, 180, 56, 0.55);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-transition {
+        background: rgba(158, 126, 255, 0.22);
+        border-color: rgba(158, 126, 255, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-post {
+        background: rgba(82, 204, 151, 0.22);
+        border-color: rgba(82, 204, 151, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-metalloid {
+        background: rgba(166, 205, 68, 0.22);
+        border-color: rgba(166, 205, 68, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-nonmetal {
+        background: rgba(69, 171, 245, 0.22);
+        border-color: rgba(69, 171, 245, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-halogen {
+        background: rgba(243, 84, 171, 0.22);
+        border-color: rgba(243, 84, 171, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-noble {
+        background: rgba(47, 210, 224, 0.22);
+        border-color: rgba(47, 210, 224, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-lanthanide {
+        background: rgba(91, 168, 255, 0.22);
+        border-color: rgba(91, 168, 255, 0.5);
+      }
+      [data-theme="dark"] .pt-leg-dot.pt-actinide {
+        background: rgba(255, 133, 98, 0.24);
+        border-color: rgba(255, 133, 98, 0.55);
       }
 
       /* ─── BATCH INPUT ─── */

@@ -6,7 +6,7 @@ function buildPeriodicTable() {
   PT_LAYOUT.forEach(([sym, col, row]) => {
     posMap[`${col},${row}`] = sym;
   });
-  for (let r = 1; r <= 7; r++) {
+  for (let r = 1; r <= 9; r++) {
     for (let c = 1; c <= 18; c++) {
       const sym = posMap[`${c},${r}`];
       const cell = document.createElement("div");
@@ -21,8 +21,15 @@ function buildPeriodicTable() {
           : "pt-nonmetal";
         cell.className = `pt-cell ${cls}`;
         cell.id = `pt-${sym}`;
-        cell.textContent = sym;
         if (el) {
+          const z = document.createElement("span");
+          z.className = "pt-z";
+          z.textContent = el.Z;
+          const symbol = document.createElement("span");
+          symbol.className = "pt-symbol";
+          symbol.textContent = sym;
+          cell.appendChild(z);
+          cell.appendChild(symbol);
           const tip = document.createElement("div");
           tip.className = "pt-tooltip";
           tip.textContent = `${el.name} · Z=${el.Z}`;
