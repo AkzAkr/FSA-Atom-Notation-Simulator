@@ -162,6 +162,28 @@ async function simulate(token, isStep) {
   }
   if (valid) {
     if (isAccepting(currentState)) {
+      const validation = validateOne(input);
+      if (!validation.valid) {
+        const reason = getErrorReason(input, validation);
+        const safeReason = escapeHtml(reason);
+        logMsg("", "log-info");
+        logMsg(
+          `FSA accepted format, but atom data invalid - ${reason}`,
+          "log-error",
+        );
+        document.getElementById("atomRender").innerHTML =
+          `<div class="atom-invalid-result"><div>FSA accepted format</div><span>Atom data invalid: ${safeReason}</span></div>`;
+        setTapeHead(input.length, "error", input.length);
+        activateNode(currentState, "error");
+        setStatus(
+          "invalid",
+          "ATOM DATA INVALID",
+          `FSA accepted format, but atom data invalid: ${safeReason}`,
+        );
+        addHistory(input, false);
+        updateTapeProgress(input.length, input.length);
+        return;
+      }
       setTapeHead(input.length, "active", input.length);
       logMsg("", "log-info");
       logMsg(
@@ -182,7 +204,7 @@ async function simulate(token, isStep) {
       setStatus("valid", "✓ VALID STRING", "All characters accepted");
       document.getElementById("atomRender").innerHTML =
         renderAtomHTML(input);
-      const parsed = parseAtom(input);
+      const parsed = validation.parsed;
       showElementInfo(input, parsed);
       addHistory(input, true);
     } else {

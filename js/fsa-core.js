@@ -64,8 +64,47 @@ function parseAtom(s) {
   };
 }
 
+function validateAtomSemantics(parsed) {
+  const massNum = Number.parseInt(parsed.mass, 10);
+  const atomNum = Number.parseInt(parsed.atomNum, 10);
+  const el = ELEMENTS[parsed.symbol];
+
+  if (!el) {
+    return {
+      valid: false,
+      reason: `unknown element symbol '${parsed.symbol}'`,
+    };
+  }
+  if (atomNum !== el.Z) {
+    return {
+      valid: false,
+      reason: `Z mismatch: '${parsed.symbol}' is Z=${el.Z}, not Z=${atomNum}`,
+    };
+  }
+  if (massNum < atomNum) {
+    return {
+      valid: false,
+      reason: `mass number A=${massNum} must be >= Z=${atomNum}`,
+    };
+  }
+  const isotopeRange = getKnownIsotopeMassRange(parsed.symbol);
+  if (!isotopeRange) {
+    return {
+      valid: false,
+      reason: `no isotope data available for '${parsed.symbol}'`,
+    };
+  }
+  if (!isKnownIsotopeMass(parsed.symbol, massNum)) {
+    return {
+      valid: false,
+      reason: `'${parsed.symbol}' has known isotopes A=${isotopeRange[0]}-${isotopeRange[1]}, not A=${massNum}`,
+    };
+  }
+  return { valid: true, reason: "" };
+}
+
 function validateOne(s) {
-  // Returns {valid, errorAt, errorChar, finalState, parsed}
+  // Returns {valid, errorAt, errorChar, finalState, parsed, semanticError}
   let state = "q0";
   for (let i = 0; i < s.length; i++) {
     const ch = s[i];
@@ -77,25 +116,30 @@ function validateOne(s) {
         errorChar: ch,
         finalState: state,
         parsed: null,
+        semanticError: "",
       };
     state = next;
   }
   if (isAccepting(state)) {
     try {
+      const parsed = parseAtom(s);
+      const semantic = validateAtomSemantics(parsed);
       return {
-        valid: true,
+        valid: semantic.valid,
         errorAt: -1,
         errorChar: null,
         finalState: state,
-        parsed: parseAtom(s),
+        parsed,
+        semanticError: semantic.reason,
       };
     } catch (e) {
       return {
-        valid: true,
+        valid: false,
         errorAt: -1,
         errorChar: null,
         finalState: state,
         parsed: null,
+        semanticError: "could not parse accepted atom notation",
       };
     }
   }
@@ -105,11 +149,13 @@ function validateOne(s) {
     errorChar: "EOF",
     finalState: state,
     parsed: null,
+    semanticError: "",
   };
 }
 
 function getErrorReason(s, res) {
   if (res.valid) return "";
+  if (res.semanticError) return res.semanticError;
   if (!s.trim()) return "empty input";
   if (res.errorAt < s.length)
     return `unexpected '${res.errorChar}' at pos ${res.errorAt} (state: ${res.finalState})`;

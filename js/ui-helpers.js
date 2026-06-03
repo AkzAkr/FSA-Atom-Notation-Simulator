@@ -39,17 +39,7 @@ function liveValidate(val) {
   clr.style.display = val ? "block" : "none";
   f.classList.remove("valid-border", "invalid-border");
   if (!val) return;
-  let s = "q0",
-    ok = true;
-  for (const ch of val) {
-    const nx = transition(s, ch);
-    if (nx === null) {
-      ok = false;
-      break;
-    }
-    s = nx;
-  }
-  if (ok && isAccepting(s)) f.classList.add("valid-border");
+  if (validateOne(val).valid) f.classList.add("valid-border");
   else f.classList.add("invalid-border");
 }
 

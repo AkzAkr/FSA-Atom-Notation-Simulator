@@ -504,6 +504,24 @@
         flex-wrap: wrap;
         gap: 2px;
       }
+      .atom-invalid-result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--amber);
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .atom-invalid-result span {
+        max-width: 420px;
+        color: var(--red);
+        font-size: 10px;
+        line-height: 1.5;
+        letter-spacing: 0.5px;
+        text-transform: none;
+      }
       .atom-nuclide {
         display: inline-flex;
         align-items: center;
