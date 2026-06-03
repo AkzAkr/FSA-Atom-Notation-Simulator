@@ -310,6 +310,28 @@
       .input-wrap {
         position: relative;
       }
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+      .mode-btn {
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--ink-4);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 1.4px;
+        padding: 6px 8px;
+        cursor: pointer;
+        transition: all 0.12s;
+      }
+      .mode-btn.active {
+        border-color: var(--active-stroke);
+        background: var(--active-bg);
+        color: var(--active-fg);
+      }
       .input-field {
         width: 100%;
         background: var(--bg-input);
@@ -535,6 +557,26 @@
         align-items: center;
         gap: 2px;
       }
+      .compound-formula {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 1px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--ink);
+      }
+      .compound-term {
+        display: inline-flex;
+        align-items: baseline;
+      }
+      .compound-symbol {
+        font-size: 38px;
+        line-height: 1;
+      }
+      .compound-formula sub {
+        font-size: 16px;
+        color: var(--amber);
+        margin-left: 1px;
+      }
       .atom-scripts {
         display: inline-flex;
         flex-direction: column;
@@ -623,8 +665,147 @@
         margin-left: 4px;
         letter-spacing: 1px;
       }
+      .compound-info {
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .compound-info-title {
+        text-align: center;
+        padding: 8px 0 2px;
+      }
+      .compound-info-title .compound-symbol {
+        font-size: 24px;
+      }
+      .compound-info-title .compound-formula sub {
+        font-size: 11px;
+      }
+      .compound-info-sub {
+        text-align: center;
+        color: var(--ink-5);
+        font-size: 8px;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+      }
+      .compound-grid {
+        display: grid;
+        gap: 5px;
+      }
+      .compound-item {
+        display: grid;
+        grid-template-columns: 34px 1fr auto;
+        align-items: center;
+        gap: 7px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 7px 9px;
+      }
+      .compound-item-symbol {
+        font-size: 18px;
+        font-weight: 500;
+      }
+      .compound-item-name {
+        color: var(--ink-3);
+        font-size: 10px;
+      }
+      .compound-item-count {
+        min-width: 22px;
+        text-align: center;
+        color: var(--amber);
+        font-size: 12px;
+      }
       .fsa-wrap {
         padding: 10px 12px 8px;
+      }
+      .compound-diagram {
+        min-height: 270px;
+        padding: 0;
+      }
+      .compound-fsa-svg {
+        width: 100%;
+        height: 270px;
+        display: block;
+      }
+      .compound-node-svg {
+        fill: var(--bg-panel);
+        stroke: var(--border-strong);
+        stroke-width: 1.5;
+        transition:
+          fill 0.2s,
+          stroke 0.2s;
+      }
+      .compound-node-svg.active {
+        fill: var(--active-bg-soft);
+        stroke: var(--active-stroke);
+        stroke-width: 2.5;
+      }
+      .compound-node-svg.error {
+        fill: var(--red-light);
+        stroke: var(--red);
+        stroke-width: 2;
+      }
+      .compound-node-svg.done {
+        fill: var(--green-light);
+        stroke: var(--green);
+        stroke-width: 2;
+      }
+      .compound-final-ring {
+        fill: none;
+        stroke: var(--border-strong);
+        stroke-width: 1;
+        pointer-events: none;
+      }
+      .compound-state-label {
+        fill: var(--ink-2);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        text-anchor: middle;
+        dominant-baseline: central;
+        pointer-events: none;
+      }
+      .compound-state-label.active {
+        fill: var(--active-stroke);
+      }
+      .compound-state-label.error {
+        fill: var(--red);
+      }
+      .compound-state-caption {
+        fill: var(--ink-5);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 6.5px;
+        text-align: center;
+        text-anchor: middle;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+      .compound-transition {
+        fill: none;
+        stroke: var(--border-strong);
+        stroke-width: 1.5;
+        marker-end: url(#carr);
+      }
+      .compound-transition.active {
+        stroke: var(--active-stroke);
+        stroke-width: 2.5;
+        marker-end: url(#carr-active);
+      }
+      .compound-transition.accept {
+        stroke-dasharray: 4 3;
+        opacity: 0.72;
+      }
+      .compound-start-line {
+        stroke: var(--border-strong);
+        stroke-width: 1.5;
+      }
+      .compound-note rect {
+        fill: var(--bg-card);
+        stroke: var(--border);
+      }
+      .compound-note text {
+        fill: var(--ink-4);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.8px;
       }
       .state-circle {
         fill: var(--bg-panel);
@@ -953,6 +1134,12 @@
         font-size: 11px;
         color: var(--ink-3);
       }
+      .hist-render .compound-symbol {
+        font-size: 14px;
+      }
+      .hist-render .compound-formula sub {
+        font-size: 8px;
+      }
       .hist-empty {
         font-family: "IBM Plex Mono", monospace;
         font-size: 10px;
@@ -1069,6 +1256,51 @@
       .bohr-badge span {
         color: var(--ink);
         font-weight: 500;
+      }
+      .molecule-bond {
+        stroke: var(--border-strong);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      .molecule-bond.ionic {
+        stroke-dasharray: 4 4;
+        stroke: var(--amber);
+      }
+      .molecule-atom-label {
+        fill: var(--ink);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        text-anchor: middle;
+        dominant-baseline: central;
+        pointer-events: none;
+      }
+      .molecule-charge {
+        fill: var(--amber);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 9px;
+        font-weight: 600;
+        text-anchor: middle;
+      }
+      .molecule-title {
+        fill: var(--ink-4);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 1px;
+        text-anchor: middle;
+        text-transform: uppercase;
+      }
+      .molecule-count {
+        fill: var(--amber);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10px;
+        font-weight: 600;
+        text-anchor: middle;
+      }
+      .molecule-cluster-core {
+        fill: var(--bg-card);
+        stroke: var(--border-strong);
+        stroke-dasharray: 3 3;
       }
       @keyframes orbit {
         from {

@@ -46,6 +46,22 @@
             <span class="ph-title">Input & Controls</span>
           </div>
           <div class="panel-body">
+            <div class="mode-toggle">
+              <button
+                class="mode-btn active"
+                id="modeAtom"
+                onclick="setFsaMode('atom')"
+              >
+                ATOM
+              </button>
+              <button
+                class="mode-btn"
+                id="modeCompound"
+                onclick="setFsaMode('compound')"
+              >
+                COMPOUND
+              </button>
+            </div>
             <div class="input-wrap">
               <input
                 class="input-field"
@@ -64,7 +80,7 @@
                 ×
               </button>
             </div>
-            <div class="input-hint">
+            <div class="input-hint" id="inputHint">
               FORMAT: [mass]_[Z][Symbol][charge?] · Enter to run
             </div>
             <div class="speed-row">
@@ -92,7 +108,7 @@
             </div>
             <div class="qt-section">
               <span class="qt-label">QUICK TESTS</span>
-              <div class="qt-grid">
+              <div class="qt-grid" id="atomQuickTests">
                 <button class="qt-btn" onclick="setInput('23_11Na')">
                   ²³Na
                 </button>
@@ -123,6 +139,18 @@
                 </button>
                 <button class="qt-btn err" onclick="setInput('23_Na')">
                   ✗ no Z
+                </button>
+              </div>
+              <div class="qt-grid" id="compoundQuickTests" style="display: none">
+                <button class="qt-btn" onclick="setInput('H2O')">H2O</button>
+                <button class="qt-btn" onclick="setInput('CO2')">CO2</button>
+                <button class="qt-btn" onclick="setInput('NaCl')">NaCl</button>
+                <button class="qt-btn" onclick="setInput('C6H12O6')">
+                  C6H12O6
+                </button>
+                <button class="qt-btn" onclick="setInput('CaO')">CaO</button>
+                <button class="qt-btn err" onclick="setInput('Xx2O')">
+                  Xx2O
                 </button>
               </div>
             </div>
@@ -157,7 +185,7 @@
         <div class="panel">
           <div class="panel-header">
             <div class="ph-dot"></div>
-            <span class="ph-title">Result — Scientific Notation</span>
+            <span class="ph-title" id="resultTitle">Result — Scientific Notation</span>
             <button
               id="copyBtn"
               onclick="copyResult()"
@@ -187,7 +215,7 @@
         <div class="panel" style="flex: 1">
           <div class="panel-header">
             <div class="ph-dot"></div>
-            <span class="ph-title">FSA Diagram — State Transition Graph</span>
+            <span class="ph-title" id="fsaTitle">FSA Diagram — State Transition Graph</span>
           </div>
           <div class="fsa-wrap">
             <svg
@@ -436,6 +464,11 @@
                 q0/qf
               </text>
             </svg>
+            <div
+              id="compoundDiagram"
+              class="compound-diagram"
+              style="display: none"
+            ></div>
           </div>
         </div>
       </div>
@@ -667,6 +700,8 @@
     <script src="js/bohr-atom.js"></script>
     <script src="js/fsa-visuals.js"></script>
     <script src="js/atom-ui.js"></script>
+    <script src="js/compound.js"></script>
+    <script src="js/compound-visual.js"></script>
     <script src="js/ui-helpers.js"></script>
     <script src="js/history.js"></script>
     <script src="js/simulation.js"></script>

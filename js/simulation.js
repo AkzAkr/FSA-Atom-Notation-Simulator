@@ -103,6 +103,10 @@ function setButtons(mode) {
 }
 
 async function simulate(token, isStep) {
+  if (currentMode === "compound") {
+    await simulateCompound(token, isStep);
+    return;
+  }
   const input = document.getElementById("inputStr").value.trim();
   if (!input) {
     setStatus("", "AWAITING INPUT");
@@ -238,7 +242,8 @@ function resetAll() {
   stepMode = false;
   setButtons("idle");
   clearLog();
-  clearDiagram();
+  if (currentMode === "compound") clearCompoundDiagram();
+  else clearDiagram();
   clearElementInfo();
   setStatus("", "AWAITING INPUT");
   document.getElementById("atomRender").innerHTML = "—";
@@ -249,7 +254,8 @@ function resetAll() {
   document.getElementById("sbChar").innerHTML = "";
   document.getElementById("logContainer").innerHTML =
     '<div class="log-info">// READY — Enter a string and press RUN or STEP</div>';
-  activateNode("q0");
+  if (currentMode === "compound") activateCompoundNode("c0");
+  else activateNode("q0");
   document
     .querySelectorAll(".trans-table td.tc-highlight")
     .forEach((e) => e.classList.remove("tc-highlight"));

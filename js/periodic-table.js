@@ -1,7 +1,6 @@
 function buildPeriodicTable() {
   const grid = document.getElementById("ptGrid");
   grid.innerHTML = "";
-  // Map (col,row) => element
   const posMap = {};
   PT_LAYOUT.forEach(([sym, col, row]) => {
     posMap[`${col},${row}`] = sym;
@@ -38,13 +37,14 @@ function buildPeriodicTable() {
         }
         cell.onclick = () =>
           setInput(
-            `${el ? Math.round(el.mass) : "?"}_${el ? el.Z : "?"}${sym}`,
+            currentMode === "compound"
+              ? sym
+              : `${el ? Math.round(el.mass) : "?"}_${el ? el.Z : "?"}${sym}`,
           );
       }
       grid.appendChild(cell);
     }
   }
-  // Legend
   const leg = document.getElementById("ptLegend");
   leg.innerHTML = LEGEND_ITEMS.map(
     ({ cls, label }) =>
@@ -74,4 +74,30 @@ function highlightPeriodicTable(symbol) {
   badge.textContent = el ? `${el.name} · ${el.group}` : symbol;
 }
 
-/* ─── BOHR VISUALIZER ─── */
+function highlightPeriodicTableMany(symbols) {
+  document
+    .querySelectorAll(".pt-cell.pt-highlight")
+    .forEach((e) => e.classList.remove("pt-highlight"));
+  const unique = [...new Set(symbols)].filter((symbol) => ELEMENTS[symbol]);
+  const badge = document.getElementById("ptHighlightBadge");
+  if (!unique.length) {
+    badge.textContent = "NO ELEMENT";
+    return;
+  }
+  unique.forEach((symbol) => {
+    const cell = document.getElementById(`pt-${symbol}`);
+    if (cell) cell.classList.add("pt-highlight");
+  });
+  const firstCell = document.getElementById(`pt-${unique[0]}`);
+  if (firstCell) {
+    firstCell.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
+    });
+  }
+  badge.textContent =
+    unique.length === 1
+      ? `${ELEMENTS[unique[0]].name} · ${ELEMENTS[unique[0]].group}`
+      : `${unique.length} elements in compound`;
+}

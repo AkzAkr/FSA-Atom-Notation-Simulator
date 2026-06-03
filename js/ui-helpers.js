@@ -39,7 +39,11 @@ function liveValidate(val) {
   clr.style.display = val ? "block" : "none";
   f.classList.remove("valid-border", "invalid-border");
   if (!val) return;
-  if (validateOne(val).valid) f.classList.add("valid-border");
+  const res =
+    currentMode === "compound"
+      ? validateCompoundFormula(val)
+      : validateOne(val);
+  if (res.valid) f.classList.add("valid-border");
   else f.classList.add("invalid-border");
 }
 

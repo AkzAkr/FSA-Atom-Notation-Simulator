@@ -1,9 +1,10 @@
 /* ─── HISTORY ─── */
 let history = [];
-function addHistory(inputStr, valid) {
+function addHistory(inputStr, valid, mode = currentMode) {
   history.unshift({
     inputStr,
     valid,
+    mode,
     ts: new Date().toLocaleTimeString(),
   });
   if (history.length > 30) history.pop();
@@ -19,12 +20,14 @@ function renderHistory() {
   list.innerHTML = history
     .map((h, i) => {
       const renderStr = h.valid
-        ? renderAtomHTML(h.inputStr)
+        ? h.mode === "compound"
+          ? renderCompoundHTML(h.inputStr)
+          : renderAtomHTML(h.inputStr)
         : `<span style="color:var(--red)">INVALID</span>`;
       const safeInput = h.inputStr
         .replace(/\\/g, "\\\\")
         .replace(/'/g, "\\'");
-      return `<div class="hist-item" onclick="setInput('${safeInput}')">
+      return `<div class="hist-item" onclick="setFsaMode('${h.mode || "atom"}', true); setInput('${safeInput}')">
       <div class="hist-dot ${h.valid ? "valid" : "invalid"}"></div>
       <span class="hist-str">${escapeHtml(h.inputStr)}</span>
       <span class="hist-render">${renderStr}</span>
@@ -42,8 +45,10 @@ function exportHistory() {
     return;
   }
   const csv =
-    "Input,Valid,Time\n" +
-    history.map((h) => `"${h.inputStr}",${h.valid},"${h.ts}"`).join("\n");
+    "Input,Mode,Valid,Time\n" +
+    history
+      .map((h) => `"${h.inputStr}",${h.mode || "atom"},${h.valid},"${h.ts}"`)
+      .join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);

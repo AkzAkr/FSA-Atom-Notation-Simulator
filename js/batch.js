@@ -16,6 +16,43 @@ const BATCH_SAMPLES = [
   "Fe",
   "235_92",
 ];
+const COMPOUND_BATCH_SAMPLES = [
+  "H2O",
+  "CO2",
+  "NaCl",
+  "CaO",
+  "MgO",
+  "KCl",
+  "LiF",
+  "HCl",
+  "NH3",
+  "CH4",
+  "C6H12O6",
+  "Fe2O3",
+  "Xx2O",
+  "H0O",
+  "2H",
+  "Ca(OH)2",
+];
+
+function validateBatchEntry(s) {
+  return currentMode === "compound"
+    ? validateCompoundFormula(s)
+    : validateOne(s);
+}
+
+function getBatchErrorReason(s, res) {
+  return currentMode === "compound"
+    ? getCompoundErrorReason(s, res)
+    : getErrorReason(s, res);
+}
+
+function renderBatchEntry(s, res) {
+  if (!res.valid || !res.parsed) {
+    return getBatchErrorReason(s, res).slice(0, 36);
+  }
+  return currentMode === "compound" ? renderCompoundHTML(s) : renderAtomHTML(s);
+}
 
 async function runBatch() {
   const raw = document.getElementById("batchInput").value;
@@ -30,7 +67,7 @@ async function runBatch() {
   }
 
   document.getElementById("batchStatBadge").textContent =
-    `${lines.length} ENTRIES`;
+    `${currentMode.toUpperCase()} · ${lines.length} ENTRIES`;
   document.getElementById("batchResults").innerHTML = "";
   document.getElementById("batchValidCount").textContent = "0 ✓";
   document.getElementById("batchInvalidCount").textContent = "0 ✗";
@@ -46,7 +83,7 @@ async function runBatch() {
 
   for (let i = 0; i < lines.length; i++) {
     const s = lines[i];
-    const res = validateOne(s);
+    const res = validateBatchEntry(s);
 
     // Row
     const row = document.createElement("div");
@@ -68,11 +105,8 @@ async function runBatch() {
     const notation = document.createElement("div");
     notation.className =
       "batch-notation" + (res.valid ? "" : " invalid-text");
-    if (res.valid && res.parsed) {
-      notation.innerHTML = renderAtomHTML(s);
-    } else {
-      notation.textContent = getErrorReason(s, res).slice(0, 28);
-    }
+    if (res.valid && res.parsed) notation.innerHTML = renderBatchEntry(s, res);
+    else notation.textContent = renderBatchEntry(s, res);
 
     // Pill
     const pill = document.createElement("div");
@@ -102,7 +136,7 @@ async function runBatch() {
   bar.style.display = "none";
   fill.style.width = "0%";
   document.getElementById("batchStatBadge").textContent =
-    `${lines.length} DONE`;
+    `${currentMode.toUpperCase()} · ${lines.length} DONE`;
   showToast(`Batch: ${validCount} valid, ${invalidCount} invalid`);
 }
 
@@ -117,9 +151,11 @@ function clearBatch() {
 }
 
 function loadBatchSamples() {
-  document.getElementById("batchInput").value = BATCH_SAMPLES.join("\n");
+  const samples =
+    currentMode === "compound" ? COMPOUND_BATCH_SAMPLES : BATCH_SAMPLES;
+  document.getElementById("batchInput").value = samples.join("\n");
   document.getElementById("batchStatBadge").textContent =
-    BATCH_SAMPLES.length + " ENTRIES";
+    `${currentMode.toUpperCase()} · ${samples.length} ENTRIES`;
 }
 
 function exportBatchCSV() {
@@ -133,13 +169,19 @@ function exportBatchCSV() {
     .value.split("\n")
     .map((l) => l.trim())
     .filter((l) => l);
-  let csv = "No,Input,Valid,Notation,Element\n";
+  let csv = "No,Mode,Input,Valid,Notation,Elements\n";
   rows.forEach((row, i) => {
     const s = lines[i] || "";
-    const res = validateOne(s);
-    const sym = res.valid && res.parsed ? res.parsed.symbol : "";
-    const el = sym ? (ELEMENTS[sym] ? ELEMENTS[sym].name : sym) : "";
-    csv += `${i + 1},"${s}",${res.valid},"${s}","${el}"\n`;
+    const res = validateBatchEntry(s);
+    const elements =
+      currentMode === "compound" && res.valid && res.parsed
+        ? Object.keys(res.parsed.composition)
+            .map((sym) => ELEMENTS[sym].name)
+            .join("; ")
+        : res.valid && res.parsed
+          ? ELEMENTS[res.parsed.symbol].name
+          : "";
+    csv += `${i + 1},"${currentMode}","${s}",${res.valid},"${s}","${elements}"\n`;
   });
   const blob = new Blob([csv], { type: "text/csv" });
   const a = document.createElement("a");
